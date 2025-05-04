@@ -9,19 +9,17 @@ local Puller = require('cylibs/trust/roles/puller')
 local Buffer = require('cylibs/trust/roles/buffer')
 local MagicBurster = require('cylibs/trust/roles/magic_burster')
 local Nuker = require('cylibs/trust/roles/nuker')
-local Raiser = require('cylibs/trust/roles/raiser')
-local Tank = require('cylibs/trust/roles/tank')
+local StatusRemover = require('cylibs/trust/roles/status_remover')
 
 function PaladinTrust.new(settings, action_queue, battle_settings, trust_settings)
 	local job = Paladin.new(trust_settings.CureSettings)
 	local roles = S{
 		Buffer.new(action_queue, trust_settings.BuffSettings, state.AutoBuffMode, job),
 		Healer.new(action_queue, job),
-		Raiser.new(action_queue, job),
 		MagicBurster.new(action_queue, trust_settings.NukeSettings, 0.8, L{}, job),
 		Nuker.new(action_queue, trust_settings.NukeSettings, 0.8, L{}, job),
 		Puller.new(action_queue, trust_settings.PullSettings, job),
-		Tank.new(action_queue, L{}, L{ Spell.new('Flash') })
+		StatusRemover.new(action_queue, job),
 	}
 	local self = setmetatable(Trust.new(action_queue, roles, trust_settings, job), PaladinTrust)
 
